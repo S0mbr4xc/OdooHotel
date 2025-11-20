@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+  web:
+    build: .
+    container_name: odoo_hotel
+    depends_on:
+      - db
+    ports:
+      - "8069:8069"
+    volumes:
+      - ./etc:/etc/odoo
+      - ./addons:/mnt/extra-addons
+      - ./filestore:/var/lib/odoo/.local/share/Odoo  # <--- ¡AGREGA ESTA LÍNEA!
+    command: --config /etc/odoo/odoo.conf
+    restart: always
+
+  db:
+    image: postgres:15 # O la versión compatible con tu Odoo
+    container_name: odoo_hotel_db
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=odoo_password_seguro
+      - POSTGRES_USER=odoo
+    volumes:
+      - ./data:/var/lib/postgresql/data # Persistencia de la BDD
+    restart: always
+
+volumes:
+  data:
+  etc:
+  addons:
